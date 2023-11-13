@@ -27,7 +27,15 @@ def read_integer(prompt):
         except ValueError:
             print("Sorry -numbor olny please")
 
-
+def read_float():
+    while True:
+        try:
+            users_input = float(input())
+            if users_input > 0:
+                return users_input
+        except ValueError:
+            print("Sorry -numbor olny please")
+            
 def runners_data():
     with open("runners.txt") as input:
         lines = input.readlines()
@@ -90,16 +98,18 @@ def users_venue(races_location, runners_id):
         user_location = read_nonempty_string("Where will the new race take place? ").capitalize()
         if user_location not in races_location:
             break
+    print("enter target time", end='')
+    target_time = read_float()
     connection = open(f"{user_location}.txt", "a")
-    races_location.append(user_location)
+    races_location.append(f'{user_location}, {target_time}')
     time_taken = []
     updated_runners = []
     for i in range(len(runners_id)):
         time_taken_for_runner = read_integer(f"Time for {runners_id[i]} >> ")
-        if time_taken_for_runner == 0:
+        if time_taken_for_runner > 0:
             time_taken.append(time_taken_for_runner)
             updated_runners.append(runners_id[i])
-            print(f"{runners_id[i]},{time_taken_for_runner},", file=connection)
+            print(f"{runners_id[i]},{time_taken_for_runner}", file=connection)
     connection.close()
 
 
@@ -233,6 +243,7 @@ def main():
     input_menu = read_integer_between_numbers(MENU, 1, 7)
 
     while input_menu < 7:
+        updating_races_file(races_location)
         if input_menu == 1:
             id, time_taken, venue = race_results(races_location)
             fastest_runner = winner_of_race(id, time_taken)
