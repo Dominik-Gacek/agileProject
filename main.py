@@ -212,13 +212,13 @@ def sorting_where_runner_came_in_race(location, time):
 
 def displaying_race_times_one_competitor(races_location, runner, id):
     print(f"{runner} ({id})")
-    print(f"-"*35)
+    print(f"-"*35) 
     for i in range(len(races_location)):
         time_taken = reading_race_results_of_relevant_runner(races_location[i], id)
         if time_taken is not None:
             minutes, seconds = convert_time_to_minutes_and_seconds(time_taken)
             came_in_race, number_in_race = sorting_where_runner_came_in_race(races_location[i], time_taken)
-            print(f"{races_location[i]} {minutes} mins {seconds} secs ({came_in_race} of {number_in_race})")
+            print(f"{races_location[i]} {minutes} mins {seconds} secs ({came_in_race} of {number_in_race}) ")
 
 
 def finding_name_of_winner(fastest_runner, id, runners_name):

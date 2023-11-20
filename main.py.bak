@@ -54,7 +54,7 @@ def runners_data():
 
 def race_results(races_location):
     for i in range(len(races_location)):
-        print(f"{i}: {races_location[i]}")
+        print(f"{i+1}: {races_location[i]}")
     user_input = read_integer_between_numbers("Choice > ", 1, len(races_location))
     venue = races_location[user_input - 1]
     id, time_taken = reading_race_results(venue)
@@ -141,10 +141,12 @@ def reading_race_results(location):
     id = []
     time_taken = []
     for line in lines:
-        split_line = line.split(",".strip("\n"))
-        if split_line[0] != "":
-            id.append(split_line[0])
+        try:
+            split_line = line.split(",".strip("\n"))
             time_taken.append(int(split_line[1].strip("\n")))
+            id.append(split_line[0])
+        except:
+            pass
     return id, time_taken
 
 
