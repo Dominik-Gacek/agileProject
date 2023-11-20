@@ -66,7 +66,9 @@ def race_venues():
         lines = input.readlines()
     races_location = []
     for line in lines:
-        races_location.append(line.strip("\n"))
+        if line != '\n':
+            location = line.split(",")
+            races_location.append(location[0].strip("\n"))
     return races_location
 
 
@@ -140,8 +142,9 @@ def reading_race_results(location):
     time_taken = []
     for line in lines:
         split_line = line.split(",".strip("\n"))
-        id.append(split_line[0])
-        time_taken.append(int(split_line[1].strip("\n")))
+        if split_line[0] != "":
+            id.append(split_line[0])
+            time_taken.append(int(split_line[1].strip("\n")))
     return id, time_taken
 
 
@@ -151,9 +154,12 @@ def reading_race_results_of_relevant_runner(location, runner_id):
     id = []
     time_taken = []
     for line in lines:
-        split_line = line.split(",".strip("\n"))
-        id.append(split_line[0])
-        time_taken.append(int(split_line[1].strip("\n")))
+        try:
+            split_line = line.split(",".strip("\n"))
+            time_taken.append(int(split_line[1].strip("\n")))
+            id.append(split_line[0])
+        except:
+            pass
     for i in range(len(id)):
         if runner_id == id[i]:
             time_relevant_runner = time_taken[i]
@@ -191,9 +197,12 @@ def sorting_where_runner_came_in_race(location, time):
         lines = input_type.readlines()
     time_taken = []
     for line in lines:
-        split_line = line.split(",".strip("\n"))
-        t = int(split_line[1].strip("\n"))
-        time_taken.append(t)
+        try:
+            split_line = line.split(",".strip("\n"))
+            t = int(split_line[1].strip("\n"))
+            time_taken.append(t)
+        except:
+            pass
 
     time_taken.sort()
     return time_taken.index(time) + 1, len(lines)
