@@ -46,7 +46,7 @@ def runners_data():
         if len(split_line)>= 2:
             runners_name.append(split_line[0])
             id = split_line[1].strip("\n")
-            runners_id.append(id)
+            runners_id.append(id.strip())
         else:
             print(split_line)
     return runners_name, runners_id
@@ -244,16 +244,65 @@ def displaying_runners_who_have_won_at_least_one_race(races_location, runners_na
     for i, fastest_runner in enumerate(winners):
         print(f"{runners[i]} ({fastest_runner})")
 
+def sort_times(id, time, asc = True):  
+    outid =[]
+    outtime = []
+    
+    
+    while len(id)>0:
+        max = time[0]
+        idmax = 0
+        for i, t in enumerate(time):
+            if ((max < t) and (asc)) or ((max > t) and not asc):
+                max = t
+                idmax = i
+        outid.append(id.pop(idmax))
+        outtime.append(time.pop(idmax))
+    return outid, outtime    
+        
 
+def read_podium_of_race(races_location):
+    for i in range(len(races_location)):
+        id, time_taken = reading_race_results(races_location[i])
+        id, time_taken = sort_times(id, time_taken, asc = False)
+        print(f"Podium for {races_location[i]}")
+        print(f"="*37)
+        minutes = []
+        seconds = []
+        for i in range(3):
+            minutes.append(time_taken[i] // 60)
+            seconds.append(time_taken[i] % 60)
+        for i in range(3):
+            print(f"{i+1}: {id[i]:<10s} {minutes[i]} minutes and {seconds[i]} seconds")
+    
+def read_no_podium(races_location, runners_name, runners_id):
+    win = []
+    for i in range(len(races_location)):
+        id, time_taken = reading_race_results(races_location[i])
+        id, time_taken = sort_times(id, time_taken, asc = False)
+        for j in range(3):
+            if id[j] not in win:
+                win.append(id[j].strip())
+    loss = []
+    names = []
+    for i in runners_id:
+        if i not in win:
+            loss.append(i)
+            names.append(runners_name[runners_id.index(i)])
+    print(f"Runners with no podium finish")
+    print(f"="*37)
+    for i in range(len(loss)):
+        print(f"{loss[i]} : {names[i]}")
+    
 def main():
     races_location = race_venues()
     runners_name, runners_id = runners_data()
     MENU = "1. Show the results for a race \n2. Add results for a race \n3. Show all competitors by county " \
            "\n4. Show the winner of each race \n5. Show all the race times for one competitor " \
-           "\n6. Show all competitors who have won a race \n7. Quit \n>>> "
-    input_menu = read_integer_between_numbers(MENU, 1, 7)
+           "\n6. Show all competitors who have won a race \n7. Show all podium places \n8. Show all runners who have not had a podium finish \n9. Quit \n>>> "
+    input_menu = read_integer_between_numbers(MENU, 1, 9)
 
-    while input_menu < 7:
+    while input_menu < 9:
         updating_races_file(races_location)
         if input_menu == 1:
             id, time_taken, venue = race_results(races_location)
@@ -270,8 +319,13 @@ def main():
             displaying_race_times_one_competitor(races_location, runner, id)
         elif input_menu == 6:
             displaying_runners_who_have_won_at_least_one_race(races_location, runners_name, runners_id)
+        elif input_menu == 7:
+            read_podium_of_race(races_location)
+        elif input_menu ==8:
+            read_no_podium(races_location, runners_name, runners_id)
+            
         print()
-        input_menu = read_integer_between_numbers(MENU, 1, 7)
+        input_menu = read_integer_between_numbers(MENU, 1, 9)
     updating_races_file(races_location)
 
 
