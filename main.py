@@ -329,4 +329,9 @@ def main():
     updating_races_file(races_location)
 
 
+
+def test_rn():
+    assert 1 == 1 
+
+
 main()
